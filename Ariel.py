@@ -5,6 +5,24 @@ from pyigdl import IGDownloader
 import colorama
 from colorama import Fore, Style
 
+
+"""
+C:\Python311\Lib\site-packages\pytube\cipher.py
+ALTERAR LINHA 264
+function_patterns = [
+    # https://github.com/ytdl-org/youtube-dl/issues/29326#issuecomment-865985377
+    # https://github.com/yt-dlp/yt-dlp/commit/48416bc4a8f1d5ff07d5977659cb8ece7640dcd8
+    # var Bpa = [iha];
+    # ...
+    # a.C && (b = a.get("n")) && (b = Bpa[0](b), a.set("n", b),
+    # Bpa.length || iha("")) }};
+    # In the above case, `iha` is the relevant function name
+    r'a\.[a-zA-Z]\s*&&\s*\([a-z]\s*=\s*a\.get\("n"\)\)\s*&&.*?\|\|\s*([a-z]+)',
+    r'\([a-z]\s*=\s*([a-zA-Z0-9$]+)(\[\d+\])?\([a-z]\)',
+    r'\([a-z]\s*=\s*([a-zA-Z0-9$]+)(\[\d+\])\([a-z]\)',
+]
+"""
+
 user = os.getlogin()
 colorama.init()
 LIST_MUSICS = []
@@ -17,8 +35,9 @@ def HEAD():
        / _ \   | |_) |  | |  |  _|   | |    
       / ___ \  |  _ <   | |  | |___  | |___ 
      /_/   \_\ |_| \_\ |___| |_____| |_____|
-    {Style.NORMAL}{Fore.WHITE}''')
-    inicio()
+    {Style.NORMAL}{Fore.WHITE}
+    Pasta de Download: {local}''')
+    
 
 
 def YTdownloader():
@@ -26,27 +45,28 @@ def YTdownloader():
         for music in LIST_MUSICS:
             if 'https://' in music:
                 try:
-                    video = YouTube(music, use_oauth=True, allow_oauth_cache=False)
-                    stream = video.streams.filter(only_audio=True).order_by('abr').desc()
+                    video = YouTube(music, use_oauth=False, allow_oauth_cache=False)
+                    stream = video.streams.filter(only_audio=True).order_by('abr').desc().first()
                     stream.download(local, filename=f"{video.title}.mp3")  # caminho do diretorio para download
                     print(f"{video.title} {Fore.LIGHTGREEN_EX}{Style.BRIGHT}SUCESSO.{Fore.WHITE}{Style.NORMAL}")
-                    inicio()
-                except:
+                except Exception as e:
+                    print(e)
                     print(f'{video.title} {Fore.RED}{Style.BRIGHT}FALHOU.{Fore.WHITE}{Style.NORMAL}')
                     inicio()
 
             else:
                 results = YoutubeSearch(music, max_results=1).to_dict()
                 try:
-                    url = 'youtube.com' + results[0]['url_suffix']
-                    video = YouTube(url, use_oauth=True, allow_oauth_cache=False)
-                    stream = video.streams.filter(only_audio=True).order_by('abr').desc()
+                    url = 'youtube.com{}'.format(results[0]['url_suffix'])
+                    video = YouTube(url, use_oauth=False, allow_oauth_cache=False)
+                    stream = video.streams.filter(only_audio=True).order_by('abr').desc().first()
                     stream.download(local, filename=f"{video.title}.mp3")  # caminho do diretorio para download
+                    print(f"{video.title} {Fore.LIGHTGREEN_EX}{Style.BRIGHT}SUCESSO.{Fore.WHITE}{Style.NORMAL}")
+                except Exception as e:
+                    print(e)
                     print(f'{video.title} {Fore.RED}{Style.BRIGHT}FALHOU.{Fore.WHITE}{Style.NORMAL}')
                     inicio()
-                except:
-                    print(f'{video.title} {Fore.RED}{Style.BRIGHT}FALHOU.{Fore.WHITE}{Style.NORMAL}')
-                    inicio()
+        inicio()
     else:
         print(f'{Style.BRIGHT}A lista de músicas está vazia!{Style.NORMAL}')
         music_downloader()
@@ -71,7 +91,6 @@ def music_downloader():
                 YTdownloader()
                 break
             elif nome == '3':
-                HEAD()
                 break
             elif nome == '4':
                 if LIST_MUSICS:
@@ -82,11 +101,11 @@ def music_downloader():
             elif nome == '5':
                 if LIST_MUSICS:
                     LIST_MUSICS.clear()
-                    print('A lista de músicas foi esvaziada')
-                    music_downloader()
+                    print(f'{Style.BRIGHT}A lista de músicas foi esvaziada{Style.NORMAL}')
+                    #music_downloader()
                 else:
-                    print('A lista já está vazia')
-                    music_downloader()
+                    print(f'{Style.BRIGHT}A lista já está vazia{Style.NORMAL}')
+                    #music_downloader()
             else:
                 LIST_MUSICS.append(nome)
     elif i == '3':
@@ -115,11 +134,12 @@ def reel_download():
         print('Digite "1" para voltar ao menu principal')
         data = input(f'{Fore.YELLOW}Link do Reel{Fore.WHITE}/{Fore.CYAN}Opção Desejada{Fore.WHITE}: ')
         if data == '1':
-            HEAD()
+            break
         else:
             data = IGDownloader(data)
             link = data[0]["download_link"]
             os.system(f'start {link}')
+            break
 
 
 def inicio():
@@ -132,8 +152,12 @@ def inicio():
     if i == '1':
         localDownload()
     elif i == '2':
+        os.system('cls')
+        HEAD()
         music_downloader()
     elif i == '3':
+        os.system('cls')
+        HEAD()
         reel_download()
     else:
         print(f'Comando: {i} {Fore.RED}Invalido{Fore.WHITE}')
@@ -153,6 +177,6 @@ def localDownload():
 
 
 HEAD()
-
+inicio()
 
 
