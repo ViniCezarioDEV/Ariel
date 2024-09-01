@@ -44,6 +44,7 @@ def YTdownloader():
     if LIST_MUSICS:
         for music in LIST_MUSICS:
             if 'https://' in music:
+                os.system('cls')
                 try:
                     video = YouTube(music, use_oauth=False, allow_oauth_cache=False)
                     stream = video.streams.filter(only_audio=True).order_by('abr').desc().first()
@@ -66,6 +67,7 @@ def YTdownloader():
                     print(e)
                     print(f'{video.title} {Fore.RED}{Style.BRIGHT}FALHOU.{Fore.WHITE}{Style.NORMAL}')
                     inicio()
+        HEAD()
         inicio()
     else:
         print(f'{Style.BRIGHT}A lista de músicas está vazia!{Style.NORMAL}')
