@@ -36,12 +36,13 @@ def HEAD():
       / ___ \  |  _ <   | |  | |___  | |___ 
      /_/   \_\ |_| \_\ |___| |_____| |_____|
     {Style.NORMAL}{Fore.WHITE}
-    Pasta de Download: {local}''')
+    Pasta de Download: {local}\n''')
     
 
 
 def YTdownloader():
     if LIST_MUSICS:
+        HEAD()
         for music in LIST_MUSICS:
             if 'https://' in music:
                 os.system('cls')
@@ -53,7 +54,6 @@ def YTdownloader():
                 except Exception as e:
                     print(e)
                     print(f'{video.title} {Fore.RED}{Style.BRIGHT}FALHOU.{Fore.WHITE}{Style.NORMAL}')
-                    inicio()
 
             else:
                 results = YoutubeSearch(music, max_results=1).to_dict()
@@ -66,8 +66,7 @@ def YTdownloader():
                 except Exception as e:
                     print(e)
                     print(f'{video.title} {Fore.RED}{Style.BRIGHT}FALHOU.{Fore.WHITE}{Style.NORMAL}')
-                    inicio()
-        HEAD()
+        
         inicio()
     else:
         print(f'{Style.BRIGHT}A lista de músicas está vazia!{Style.NORMAL}')
@@ -96,18 +95,20 @@ def music_downloader():
                 break
             elif nome == '4':
                 if LIST_MUSICS:
+                    HEAD()
                     for musica in LIST_MUSICS:
                         print(musica)
                 else:
                     print(f'{Style.BRIGHT}A lista de músicas está vazia!{Style.NORMAL}')
             elif nome == '5':
                 if LIST_MUSICS:
+                    HEAD()
                     LIST_MUSICS.clear()
                     print(f'{Style.BRIGHT}A lista de músicas foi esvaziada{Style.NORMAL}')
-                    #music_downloader()
                 else:
+                    HEAD()
                     print(f'{Style.BRIGHT}A lista já está vazia{Style.NORMAL}')
-                    #music_downloader()
+                    
             else:
                 LIST_MUSICS.append(nome)
     elif i == '3':
@@ -170,11 +171,19 @@ def localDownload():
     global local
     print('Local de Download padrão é "Downloads"')
     local = input('Indique o novo local de Download: ')
+    while True:
+        if os.path.exists(local) == False: #se local nao existir
+            print(f'{Fore.LIGHTYELLOW_EX}Local inválido, Insira um local existente.{Fore.WHITE}')
+            local = input('Indique o novo local de Download: ')
+        else: #se local existir
+            break
+
     if local:
-        print(f'{Style.BRIGHT}{Fore.LIGHTBLUE_EX}Novo local de Download: {local}{Fore.WHITE}{Style.NORMAL}')
+        pass #ja está preechido
     else:
-        local = fr'C:/Users/{user}/Downloads'
-        print(f'{Style.BRIGHT}{Fore.LIGHTBLUE_EX}O local do download é: {local}{Fore.WHITE}{Style.NORMAL}')
+        local = fr'C:/Users/{user}/Downloads' #se apertar enter redefine para download
+    os.system('cls')
+    HEAD()
     inicio()
 
 
